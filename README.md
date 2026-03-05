@@ -31,34 +31,15 @@ Créée avec ❤️ à Dakar • Mars 2026
 | Lombok            | Moins de code répétitif                 |
 | HTML + CSS        | Interface utilisateur                   |
 
-## Architecture simple
-Navigateur
-(HTML)
-│
-▼  HTTP / fetch
-+---------------------+
-|   Contrôleur        |
-| TacheController     |
-+---------------------+
-│
-▼  Appel service
-+---------------------+
-|   Service           |
-|   TacheService      |
-+---------------------+
-│
-▼  Appel repository
-+---------------------+
-|   Repository        |
-| TacheRepository     |
-+---------------------+
-│
-▼  JPA / Hibernate
-+---------------------+
-|   Base MySQL        |
-|  table taches       |
-+---------------------+
 
+## Architecture en couches
+
+| Couche / Niveau           | Composants principaux                  | Responsabilités principales                               | Communique avec                     |
+|---------------------------|----------------------------------------|-----------------------------------------------------------|-------------------------------------|
+| **Présentation (Web)**    | TacheController + index.html (HTML) | Routes API REST, réponses JSON, interface utilisateur     | Navigateur + Service                |
+| **Métier (Business)**     | TacheService                           | Logique applicative, validation, conversion DTO ↔ Entity  | Controller + Repository             |
+| **Persistence (Données)** | TacheRepository + Tache (Entity)       | Accès à la base de données (CRUD via JPA)                 | Service + MySQL                     |
+| **Base de données**       | MySQL (table `taches`)                 | Stockage persistant des tâches                            | Hibernate via JDBC                  |
 
 ## Principes SOLID appliqués
 
