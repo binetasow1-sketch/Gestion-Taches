@@ -1,101 +1,95 @@
-<div align="center">
 
-  <img src="https://img.shields.io/badge/Spring%20Boot-3.3.4-green?style=for-the-badge&logo=spring&logoColor=white" alt="Spring Boot"/>
-  <img src="https://img.shields.io/badge/MySQL-8.0-blue?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL"/>
-  <img src="https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java&logoColor=white" alt="Java 21"/>
-  <img src="https://img.shields.io/badge/HTML5%20%2B%20JS-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML + JS"/>
+# Gestion de Tâches – Bineta 🌴✨
 
-  <h1>📋 Gestion de Tâches - Bineta</h1>
-  <p>
-    <strong>Une application simple, moderne et efficace pour organiser ta vie quotidienne</strong><br>
-    Projet créé avec ❤️ à Dakar • Mars 2026
-  </p>
+Une petite application **Spring Boot** pour organiser tes journées avec simplicité et sourire.
 
-  <p>
-    <a href="#démarrage-rapide">Démarrage rapide</a> •
-    <a href="#fonctionnalités">Fonctionnalités</a> •
-    <a href="#technologies">Technologies</a> •
-    <a href="#principes-solid">Principes SOLID</a> •
-    <a href="#structure-du-projet">Structure</a>
-  </p>
+Créée avec ❤️ à Dakar • Mars 2026
 
-</div>
+## Fonctionnalités
 
-## ✨ Aperçu
+- Ajouter, modifier, supprimer des tâches
+- Interface web simple et accueillante
+- Sauvegarde dans MySQL
+- API REST complète
 
-Une petite application **Spring Boot + MySQL** avec :
+## Démarrage rapide
 
-- Une API REST complète (CRUD)
-- Une interface web HTML/JS moderne et responsive
-- Sauvegarde persistante dans MySQL
-- Design doux, accueillant et motivant
+1. Crée la base `gestion_taches` dans phpMyAdmin
+2. Lance l’application :
 
-## 🚀 Démarrage rapide
+3. .\mvnw spring-boot:run
+4. 3. Ouvre : http://localhost:8080/
 
-1. Clone le projet
-   ```bash
-   git clone https://github.com/binetasow1-sketch/Gestion-Taches.git
-   cd Gestion-Taches
-   
-🎯 Fonctionnalités
+## Technologies utilisées
 
-Ajouter une tâche
-Voir toutes les tâches
-Modifier une tâche existante
-Supprimer une tâche
-Statuts colorés : À faire • En cours • Terminé
-Interface web intuitive avec animations légères
-Messages de feedback (succès / erreur)
+| Technologie       | Rôle principal                          |
+|-------------------|-----------------------------------------|
+| Spring Boot       | Framework + serveur web                 |
+| Spring Data JPA   | Gestion des entités                     |
+| Hibernate         | Mapping avec la base                    |
+| MySQL             | Stockage des tâches                     |
+| Lombok            | Moins de code répétitif                 |
+| HTML + CSS        | Interface utilisateur                   |
 
-##🧑‍💻 Technologies utilisées
-
-| Technologie       | Version      | Rôle                                      |
-|-------------------|--------------|-------------------------------------------|
-| Spring Boot       | 3.3.4        | Framework + serveur Tomcat embarqué       |
-| Spring Data JPA   | —            | ORM et repositories                       |
-| Hibernate         | 6.x          | Mapping objet-relationnel                 |
-| MySQL             | 8.x          | Base de données                           |
-| Lombok            | 1.18.x       | Réduction du code boilerplate             |
-| HTML / CSS / JS   | —            | Interface web statique + fetch API        |
-| Font Awesome      | 6.x          | Icônes                                    |
-| Google Fonts      | Poppins      | Typographie élégante                      |
+## Architecture simple
+Navigateur
+(HTML)
+│
+▼  HTTP / fetch
++---------------------+
+|   Contrôleur        |
+| TacheController     |
++---------------------+
+│
+▼  Appel service
++---------------------+
+|   Service           |
+|   TacheService      |
++---------------------+
+│
+▼  Appel repository
++---------------------+
+|   Repository        |
+| TacheRepository     |
++---------------------+
+│
+▼  JPA / Hibernate
++---------------------+
+|   Base MySQL        |
+|  table taches       |
++---------------------+
 
 
 ## Principes SOLID appliqués
-| Principe | Signification                              | Application concrète dans ce projet                                                                 |
-|----------|--------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| **S**    | Single Responsibility                      | Chaque classe a un seul rôle clair (Controller = routes, Service = métier, Repository = BD)        |
-| **O**    | Open/Closed                                | On peut ajouter des catégories sans modifier les classes existantes                                |
-| **L**    | Liskov Substitution                        | Toute implémentation future de Repository peut remplacer TacheRepository sans casser le service    |
-| **I**    | Interface Segregation                      | TacheRepository n’expose que les méthodes utiles (pas de méthodes inutiles)                        |
-| **D**    | Dependency Inversion                       | TacheService dépend de l’interface TacheRepository (injectée par Spring)                           |
+
+| Principe | Signification courte                          | Dans ce projet                                      |
+|----------|-----------------------------------------------|-----------------------------------------------------|
+| **S**    | Une classe = une responsabilité               | Controller = routes, Service = logique, Repository = BD |
+| **O**    | Ouverte à l’extension, fermée à la modif      | On peut ajouter catégories sans casser le code      |
+| **L**    | Sous-types remplaçables sans casse            | Repository interchangeable sans impact sur Service  |
+| **I**    | Interfaces spécifiques                        | TacheRepository n’a que les méthodes utiles         |
+| **D**    | Dépendre d’abstractions                       | Service dépend de l’interface Repository            |
 
 ## Structure du projet
 
-| Dossier/Fichier principal              | Contenu clé                                 | Ce qu’il fait                                   |
-|----------------------------------------|---------------------------------------------|-------------------------------------------------|
-| `pom.xml`                              | Dépendances Maven                           | Liste les bibliothèques (Spring, JPA, MySQL…)  |
-| `src/main/java/com/gestiontaches`      | Tous les fichiers Java                      | Code de l’application                           |
-| `controller/`                          | `TacheController.java`                      | Gère les requêtes HTTP (/api/taches)            |
-| `dto/`                                 | `TacheDTO.java`                             | Données envoyées/reçues par l’API               |
-| `entity/`                              | `Tache.java`                                | Modèle de la table en base de données           |
-| `repository/`                          | `TacheRepository.java`                      | Connexion à la base (sauvegarde, lecture…)      |
-| `service/`                             | `TacheService.java`                         | Logique métier (ajout, modification…)           |
-| `src/main/resources/static/`           | `index.html`                                | Page web visible dans le navigateur             |
-| `src/main/resources/`                  | `application.properties`                    | Configuration (base MySQL, port 8080…)          |
-| `README.md`                            | Ce fichier                                  | Documentation du projet                         |
+| Dossier / Fichier principal                  | Contenu clé                               | Rôle principal                                      |
+|----------------------------------------------|-------------------------------------------|-----------------------------------------------------|
+| `pom.xml`                                    | Dépendances Maven                         | Spring Boot, JPA, MySQL, Lombok, etc.               |
+| `src/main/java/com/gestiontaches`            | Code source Java                          | —                                                   |
+| `controller/TacheController.java`            | Contrôleur REST                           | Endpoints `/api/taches` (GET/POST/PUT/DELETE)       |
+| `dto/TacheDTO.java`                          | Objet de transfert                        | Données envoyées/reçues par l’API                   |
+| `entity/Tache.java`                          | Entité JPA                                | Modèle de la table `taches`                         |
+| `repository/TacheRepository.java`            | Interface repository                      | CRUD automatique avec Spring Data JPA               |
+| `service/TacheService.java`                  | Couche métier                             | Logique métier + conversion DTO ↔ Entity            |
+| `src/main/resources/static/index.html`       | Page d’accueil web                        | Interface utilisateur (HTML + CSS)                  |
+| `src/main/resources/application.properties`  | Configuration                             | Connexion MySQL, port 9090, logs Hibernate          |
+| `README.md`                                  | Documentation                             | Ce fichier que tu lis actuellement                  |
 
-⚙️ Configuration MySQL (extrait de application.properties)
-spring.datasource.url=jdbc:mysql://localhost:3306/gestion_taches?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-spring.datasource.username=root
-spring.datasource.password=
-spring.jpa.hibernate.ddl-auto=update
-server.port=8080
+## Auteur
 
-🛤️ Prochaines étapes possibles
-Authentification (login/mot de passe ou JWT)
-Ajout de catégories / priorités / dates limites
-Recherche et filtres sur les tâches
-Export PDF / CSV
-Dark mode sur l’interface
-Déploiement sur Render / Railway / Vercel
+Bineta Sow  
+Dakar, Sénégal  
+Mars 2026
+
+N’hésite pas à me dire si tu veux ajouter des choses (capture d’écran, badges, lien WhatsApp, etc.)  
+Bon code et que tes tâches soient toujours rayées avec le sourire ! 😊💛
