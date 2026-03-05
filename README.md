@@ -82,7 +82,7 @@ Navigateur
 | `repository/TacheRepository.java`            | Interface repository                      | CRUD automatique avec Spring Data JPA               |
 | `service/TacheService.java`                  | Couche métier                             | Logique métier + conversion DTO ↔ Entity            |
 | `src/main/resources/static/index.html`       | Page d’accueil web                        | Interface utilisateur (HTML + CSS)                  |
-| `src/main/resources/application.properties`  | Configuration                             | Connexion MySQL, port 9090, logs Hibernate          |
+| `src/main/resources/application.properties`  | Configuration                             | Connexion MySQL, port 8080, logs Hibernate          |
 | `README.md`                                  | Documentation                             | Ce fichier que tu lis actuellement                  |
 
 ## Auteur
