@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Tâches - Bineta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #4a90e2;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        form {
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 12px 25px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #357abd;
+        }
+        button.delete {
+            background: #e74c3c;
+        }
+        button.delete:hover {
+            background: #c0392b;
+        }
+        #taches-list {
+            margin-top: 20px;
+        }
+        .tache {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            background: #fafafa;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+        .tache-actions {
+            margin-top: 10px;
+        }
+        .message {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success { background: #dff0d8; color: #3c763d; }
+        .error   { background: #f2dede; color: #a94442; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Gestion des Tâches</h1>
+
+    <!-- Formulaire d'ajout / modification -->
+    <form id="tache-form">
+        <input type="hidden" id="tache-id" name="id">
+
+        <label for="titre">Titre *</label>
+        <input type="text" id="titre" name="titre" required>
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="3"></textarea>
+
+        <label for="statut">Statut</label>
+        <select id="statut" name="statut" required>
+            <option value="A_FAIRE">À faire</option>
+            <option value="EN_COURS">En cours</option>
+            <option value="TERMINE">Terminé</option>
+        </select>
+
+        <button type="submit" id="btn-submit">Ajouter la tâche</button>
+        <button type="button" id="btn-annuler" style="display:none; background:#95a5a6;">Annuler</button>
+    </form>
+
+    <!-- Messages de feedback -->
+    <div id="message" class="message" style="display:none;"></div>
+
+    <!-- Liste des tâches -->
+    <h2>Liste des tâches</h2>
+    <div id="taches-list"></div>
+</div>
+
+<script>
+    const API_URL = '/api/taches';
+    const form = document.getElementById('tache-form');
+    const messageDiv = document.getElementById('message');
+    const btnSubmit = document.getElementById('btn-submit');
+    const btnAnnuler = document.getElementById('btn-annuler');
+    const tacheIdInput = document.getElementById('tache-id');
+
+    // Charger les tâches au démarrage
+    chargerTaches();
+
+    // Soumission du formulaire (ajout ou modification)
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const id = tacheIdInput.value;
+        const data = {
+            titre: document.getElementById('titre').value.trim(),
+            description: document.getElementById('description').value.trim(),
+            statut: document.getElementById('statut').value
+        };
+
+        if (!data.titre) {
+            showMessage('Le titre est obligatoire', 'error');
+            return;
+        }
+
+        try {
+            let response;
+            if (id) {
+                // Modification (PUT)
+                response = await fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            } else {
+                // Création (POST)
+                response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            }
+
+            if (response.ok) {
+                showMessage(id ? 'Tâche modifiée !' : 'Tâche ajoutée !', 'success');
+                form.reset();
+                tacheIdInput.value = '';
+                btnSubmit.textContent = 'Ajouter la tâche';
+                btnAnnuler.style.display = 'none';
+                chargerTaches();
+            } else {
+                showMessage('Erreur lors de l\'opération', 'error');
+            }
+        } catch (error) {
+            showMessage('Erreur réseau : ' + error.message, 'error');
+        }
+    });
+
+    // Annuler la modification
+    btnAnnuler.addEventListener('click', () => {
+        form.reset();
+        tacheIdInput.value = '';
+        btnSubmit.textContent = 'Ajouter la tâche';
+        btnAnnuler.style.display = 'none';
+        showMessage('Modification annulée', 'success');
+    });
+
+    // Charger et afficher les tâches
+    async function chargerTaches() {
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error('Erreur réseau');
+            const taches = await response.json();
+
+            const list = document.getElementById('taches-list');
+            list.innerHTML = '';
+
+            if (taches.length === 0) {
+                list.innerHTML = '<p>Aucune tâche pour le moment.</p>';
+                return;
+            }
+
+            taches.forEach(t => {
+                const div = document.createElement('div');
+                div.className = 'tache';
+                div.innerHTML = `
+                    <strong>${t.titre}</strong><br>
+                    ${t.description ? t.description + '<br>' : ''}
+                    <em>Statut : ${t.statut}</em>
+                    <div class="tache-actions">
+                        <button onclick="modifierTache(${t.id}, '${t.titre}', '${t.description || ''}', '${t.statut}')">Modifier</button>
+                        <button class="delete" onclick="supprimerTache(${t.id})">Supprimer</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        } catch (error) {
+            showMessage('Impossible de charger les tâches : ' + error.message, 'error');
+        }
+    }
+
+    // Modifier une tâche (remplit le formulaire)
+    function modifierTache(id, titre, description, statut) {
+        tacheIdInput.value = id;
+        document.getElementById('titre').value = titre;
+        document.getElementById('description').value = description;
+        document.getElementById('statut').value = statut;
+        btnSubmit.textContent = 'Modifier la tâche';
+        btnAnnuler.style.display = 'inline-block';
+        showMessage('Modifiez les champs et validez', 'success');
+    }
+
+    // Supprimer une tâche
+    async function supprimerTache(id) {
+        if (!confirm('Voulez-vous vraiment supprimer cette tâche ?')) return;
+
+        try {
+            const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            if (response.ok) {
+                showMessage('Tâche supprimée avec succès', 'success');
+                chargerTaches();
+            } else {
+                showMessage('Erreur lors de la suppression', 'error');
+            }
+        } catch (error) {
+            showMessage('Erreur réseau : ' + error.message, 'error');
+        }
+    }
+
+    // Afficher un message temporaire
+    function showMessage(text, type) {
+        messageDiv.textContent = text;
+        messageDiv.className = 'message ' + type;
+        messageDiv.style.display = 'block';
+        setTimeout(() => { messageDiv.style.display = 'none'; }, 4000);
+    }
+</script>
+</body>
+</html>
