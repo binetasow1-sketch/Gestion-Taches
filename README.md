@@ -1,9 +1,9 @@
 
 # Gestion de Tâches – Bineta 🌴✨
 
-Une petite application **Spring Boot** pour organiser tes journées avec simplicité et sourire.
+Une petite application **Spring Boot** pour organiser mes journées avec simplicité et sourire.
 
-Créée avec ❤️ à Dakar • Mars 2026
+Créée à Dakar • Mars 2026
 
 ## Fonctionnalités
 
@@ -72,5 +72,3 @@ Bineta Sow
 Dakar, Sénégal  
 Mars 2026
 
-N’hésite pas à me dire si tu veux ajouter des choses (capture d’écran, badges, lien WhatsApp, etc.)  
-Bon code et que tes tâches soient toujours rayées avec le sourire ! 😊💛
